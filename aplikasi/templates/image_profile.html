@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- <form action="{% url 'profile_image' user.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn btn-warning">Ubah</button>
+</form> -->
+<form method="post" enctype="multipart/form-data" action="{% url 'profile_image' user.id %}">
+{% csrf_token %}
+{{ form.as_p }}
+
+<img id="profile-picture-preview" src="" alt="Profile Picture Preview">
+<input type="hidden" name="x" id="x" />
+<input type="hidden" name="y" id="y" />
+<input type="hidden" name="width" id="width" />
+<input type="hidden" name="height" id="height" />
+
+<button type="submit" class="btn btn-success">Update Profile Picture</button>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
+<script>
+const input = document.getElementById('id_profile_picture');
+const preview = document.getElementById('profile-picture-preview');
+const cropper = new Cropper(preview, {
+    aspectRatio: 1, // 1:1 aspect ratio
+    viewMode: 1, // Display image with aspect ratio
+    zoomable: false, // Disable zooming
+    crop: function(event) {
+    document.getElementById('x').value = event.detail.x;
+    document.getElementById('y').value = event.detail.y;
+    document.getElementById('width').value = event.detail.width;
+    document.getElementById('height').value = event.detail.height;
+    },
+});
+
+input.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        cropper.replace(e.target.result);
+    };
+    reader.readAsDataURL(file);
+    }
+});
+</script>
+
+
+{% endblock %}

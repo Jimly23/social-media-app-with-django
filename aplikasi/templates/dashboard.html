@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#!">Whisper</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{% url 'posting' %}">Posting</a></li>
+                <li class="nav-item"><a class="nav-link" aria-current="page" href="{% url 'profile' user.id %}">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" aria-current="page" href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<header class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="fw-bolder">Welcome {{ user.username }}!</h1>
+            <p class="lead mb-0">Selamat datang di aplikasi sosial media karya anak bangsa</p>
+            <img src="{{ user.profileuser.image.url }}" alt="" width="50px" class="rounded-circle">
+        </div>
+    </div>
+</header>
+<div class="container">
+    {% for post in posts %}
+    <div>
+        <div class="col col-xl-10">
+            <div class="card mb-5" style="border-radius: 15px;">
+              <div class="card-body p-4">
+                <div class="profile d-flex align-items-center mb-3">
+                    <a href="{% url 'profile' post.user_id %}">
+                        <img src="{{ post.profile_pic }}" alt="" width="50px" class="rounded-circle">
+                    </a>
+                    <h5 class="mx-2">{{ post.user.username }}</h5>
+                </div>
+                <p class="small mb-4">{{ post.content }}</p>
+                <p class="small mb-0">{{ post.date_post|date:"d F Y, H:i" }}</p>
+                <hr class="my-2">
+                <div class="d-flex justify-content-start align-items-center">
+                  <p class="mb-0 text-uppercase"><i class="fas fa-cog me-2"></i> <span
+                      class="text-muted small">Like</span></p>
+                  <p class="mb-0 text-uppercase"><i class="fas fa-link ms-4 me-2"></i> <span
+                      class="text-muted small">Coment</span></p>
+                  <p class="mb-0 text-uppercase"><i class="fas fa-ellipsis-h ms-4 me-2"></i> <span
+                      class="text-muted small">Share</span>
+                    <span class="ms-3 me-4">|</span></p>
+                  <a href="#!">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                      class="img-fluid rounded-circle me-3" width="35">
+                  </a>
+                  {% if post.user_id == user.id %}
+                  <a href="{% url 'delete_posting' post.id %}"><button class="btn btn-outline-warning">delete</button></a>
+                  {% endif %}
+                  {% if user.username == 'admin' and post.user_id != user.id%}
+                    <a href="{% url 'delete_posting' post.id %}">
+                        <button class="btn btn-outline-warning">delete</button>
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock%}
